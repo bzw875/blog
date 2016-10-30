@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "supervisor ./bin/www"
+    "start": "node ./bin/www",
+    "sv": "supervisor ./bin/www"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
@@ -16,6 +17,8 @@
     "mongodb": "2.0.42",
     "express-session": "1.9.1",
     "connect-mongo": "0.8.2",
-    "connect-flash": "0.1.1"    
+    "connect-flash": "0.1.1",
+    "markdown": "0.5.0",
+    "multer": "1.1.0"
   }
 }
