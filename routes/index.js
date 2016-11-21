@@ -3,7 +3,7 @@ var crypto = require('crypto'),
     Post = require('../models/post.js'),
     Comment = require('../models/comment.js'),
     multer = require('multer'),
-    passport = require('passport');
+    setting = require('../settings.js');
 
 module.exports = function(app) {
     app.get('/', function(req, res) {
@@ -27,53 +27,6 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/reg', checkNotLogin);
-    app.get('/reg', function(req, res) {
-        res.render('reg', {
-            title: '注册',
-            user: req.session.user,
-            success: req.flash('success').toString(),
-            error: req.flash('error').toString()
-        });
-    });
-
-    app.post('/reg', checkNotLogin);
-    app.post('/reg', function(req, res) {
-        var name = req.body.name,
-            password = req.body.password,
-            password_re = req.body['password-repeat'];
-        if (password_re != password) {
-            req.flash('error', '两次输入的密码不一致!');
-            return res.redirect('/reg');
-        }
-        var md5 = crypto.createHash('md5'),
-            password = md5.update(req.body.password).digest('hex');
-        var newUser = new User({
-            name: name,
-            password: password,
-            email: req.body.email
-        });
-        User.get(newUser.name, function(err, user) {
-            if (err) {
-                req.flash('error', err);
-                return res.redirect('/');
-            }
-            if (user) {
-                req.flash('error', '用户已存在!');
-                return res.redirect('/reg');
-            }
-            newUser.save(function(err, user) {
-                if (err) {
-                    req.flash('error', err);
-                    return res.redirect('/reg');
-                }
-                req.session.user = user;
-                req.flash('success', '注册成功!');
-                res.redirect('/');
-            });
-        });
-    });
-
     app.get('/login', checkNotLogin);
     app.get('/login', function(req, res) {
         res.render('login', {
@@ -84,36 +37,23 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/login/github', passport.authenticate("github", { session: false }));
-    app.get("/login/github/callback", passport.authenticate("github", {
-        session: false,
-        failureRedirect: "/login",
-        successFlash: '登录成功！'
-    }), function(req, res) {
-        req.session.user = {
-            name: req.user.username,
-            head: "https://gravatar.com/avatar/" + req.user._json.gravatar_id + "?s=48"
-        };
-        res.redirect('/');
-    })
-
     app.post('/login', checkNotLogin);
     app.post('/login', function(req, res) {
         var md5 = crypto.createHash('md5'),
             password = md5.update(req.body.password).digest('hex');
-        User.get(req.body.name, function(err, user) {
-            if (!user) {
-                req.flash('error', '用户不存在!');
-                return res.redirect('/login');
-            }
-            if (user.password != password) {
-                req.flash('error', '密码错误!');
-                return res.redirect('/login');
-            }
-            req.session.user = user;
+
+        if (req.body.name === setting.email && password === setting.password) {
+            req.session.user = {
+                name: setting.name,
+                email: setting.email,
+                head: setting.head
+            };
             req.flash('success', '登陆成功!');
             res.redirect('/');
-        });
+        } else {
+            req.flash('error', '用户或密码错误!');
+            return res.redirect('/login');
+        }
     });
 
     app.get('/post', checkLogin);
@@ -361,29 +301,6 @@ module.exports = function(app) {
             req.flash('succss', '删除成功！');
             res.redirect('/');
         });
-    });
-
-    app.get('/reprint/:name/:day/:title', checkLogin);
-    app.get('/reprint/:name/:day/:title', function (req, res) {
-      Post.edit(req.params.name, req.params.day, req.params.title, function (err, post) {
-        if (err) {
-          req.flash('error', err); 
-          return res.redirect(back);
-        }
-        var currentUser = req.session.user,
-            reprint_from = {name: post.name, day: post.time.day, title: post.title},
-            reprint_to = {name: currentUser.name, head: currentUser.head};
-        Post.reprint(reprint_from, reprint_to, function (err, post) {
-          if (err) {
-            req.flash('error', err); 
-            return res.redirect('back');
-          }
-          req.flash('success', '转载成功!');
-          var url = encodeURI('/u/' + post.name + '/' + post.time.day + '/' + post.title);
-          //跳转到转载后的文章页面
-          res.redirect(url);
-        });
-      });
     });
 
     app.use(function(req, res){
