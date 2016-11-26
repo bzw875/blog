@@ -45,8 +45,7 @@ module.exports = function(app) {
         if (req.body.name === setting.email && password === setting.password) {
             req.session.user = {
                 name: setting.name,
-                email: setting.email,
-                head: setting.head
+                email: setting.email
             };
             req.flash('success', '登陆成功!');
             res.redirect('/');
@@ -70,7 +69,7 @@ module.exports = function(app) {
     app.post('/post', function(req, res) {
         var currentUser = req.session.user,
             tags = [req.body.tag1, req.body.tag2, req.body.tag3],
-            post = new Post(currentUser.name, currentUser.head, req.body.title, tags, req.body.post);
+            post = new Post(currentUser.name, req.body.title, tags, req.body.post);
             
         post.save(function(err) {
             if (err) {
@@ -229,12 +228,10 @@ module.exports = function(app) {
             (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes());
 
         var md5 = crypto.createHash('md5'),
-            email_MD5 = md5.update(req.body.email.toLowerCase()).digest('hex'),
-            head = "http://www.gravatar.com/avatar/" + email_MD5 + "?s=48";
+            email_MD5 = md5.update(req.body.email.toLowerCase()).digest('hex');
 
         var comment = {
             name: req.body.name,
-            head: head,
             email: req.body.email,
             website: req.body.website,
             time: time,

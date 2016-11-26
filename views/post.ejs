@@ -1,8 +1,15 @@
 <%- include header %>
-<form method="post">
-    <p>标题<br><input type="text" name="title"></p>
-    <p>标签：<input type="text" name="tag1"><input type="text" name="tag2"><input type="text" name="tag3"></p>
-    <p>正文:<textarea name="post" rows="20" cols="100"></textarea></p>
+<form class="post-form" method="post">
+    <p><label>标题</label></p>
+    <p><input type="text" name="title"></p>
+    <p><label>标签</label></p>
+    <p class="tag-input">
+        <input type="text" name="tag1">
+        <input type="text" name="tag2">
+        <input type="text" name="tag3">
+    </p>
+    <p><label>正文</label></p>
+    <p><textarea name="post" rows="20" cols="100"></textarea></p>
     <p><input type="submit" value="发表"></p>
 </form>
 <%- include footer %>

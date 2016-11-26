@@ -1,5 +1,7 @@
 <%- include header %>
 <% posts.forEach(function (tag, index) { %>
-  <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
+    <% if (tag) { %>
+    <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
+    <% } %>
 <% }) %>
 <%- include footer %>

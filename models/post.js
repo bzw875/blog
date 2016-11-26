@@ -1,9 +1,8 @@
 var mongodb = require('./db')
 markdown = require('markdown').markdown;
 
-function Post(name, head, title, tags, post) {
+function Post(name, title, tags, post) {
     this.name = name;
-    this.head = head;
     this.title = title;
     this.tags = tags;
     this.post = post;
@@ -26,7 +25,6 @@ Post.prototype.save = function(callback) {
         //要存入数据库的文档
     var post = {
         name: this.name,
-        head: this.head,
         time: time,
         title: this.title,
         tags: this.tags,
@@ -91,7 +89,12 @@ Post.getTen = function(name, page, callback) {
                     }
                     //解析 markdown 为 html
                     docs.forEach(function(doc) {
-                        doc.post = markdown.toHTML(doc.post);
+                        var post = doc.post;
+                        if (post.length > 200) {
+                           doc.post = markdown.toHTML(post.slice(0, 200) + '......'); 
+                        } else {
+                            doc.post = markdown.toHTML(post);
+                        }
                     });
                     callback(null, docs, total);
                 });
