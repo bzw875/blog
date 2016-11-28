@@ -1,10 +1,10 @@
 <%- include header %>
 <% posts.forEach(function (post, index) { %>
   <article>
-  <p><h2>
+  <p><h3>
     <a href="/u/<%= post.name %>/<%= post.time.day %>/<%= post.title %>"><%= post.title %></a>
     <a href="/u/<%= post.name %>"></a>
-  </h2></p>
+  </h3></p>
   <p class="info">
     作者：<a href="/u/<%= post.name %>"><%= post.name %></a> | 
     日期：<%= post.time.minute %> | 
@@ -17,8 +17,7 @@
   </p>
   <p><%- post.post %></p>
   <p class="info">
-    阅读：<%= post.pv %> | 
-    评论：<%= post.comments.length %>
+    阅读：<%= post.pv %>
   </p>
   </article>
 <% }) %>

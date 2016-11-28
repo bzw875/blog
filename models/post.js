@@ -29,7 +29,6 @@ Post.prototype.save = function(callback) {
         title: this.title,
         tags: this.tags,
         post: this.post,
-        comments: [],
         pv: 0
     };
     //打开数据库
@@ -144,9 +143,6 @@ Post.getOne = function(name, day, title, callback) {
                     });
                     //解析 markdown 为 html
                     doc.post = markdown.toHTML(doc.post);
-                    doc.comments.forEach(function(comment) {
-                        comment.content = markdown.toHTML(comment.content);
-                    });
                     callback(null, doc); //返回查询的一篇文章
                 }
             });

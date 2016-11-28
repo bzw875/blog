@@ -1,7 +1,7 @@
 body {
-    font-family: -apple-system,  "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    font-family: 'Sabon_roman', Arial, Helvetica, sans-serif;
     font-weight: 400;
-    font-size: 14px;
+    font-size: 12px;
     line-height: 1.42857143;
     color: #333;
     background-color: #fff;
@@ -18,8 +18,14 @@ body {
           box-sizing: border-box;
 }
 a {
-    color: #4095ce;
+    color: #1a0dab;
     text-decoration: none;
+}
+a:visited {
+    color: #609;
+}
+a:hover {
+    text-decoration: underline;
 }
 ul,
 ol {
@@ -79,11 +85,14 @@ ol {
 }
 
 .logo h1 {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
 }
 .logo a {
     color: #000;
+}
+.index-nav a:hover {
+    text-decoration: none;
 }
 .menu-list {
     margin-top: 20px;
@@ -119,11 +128,11 @@ input[type="text"].search {
     top: -2px;
 }
 .search-form.open-search {
-    height: 140px;
-    padding: 30px 0;
+    height: 50px;
+    padding: 10px 0;
 }
 .open-search input.search {
-    padding: 40px 20px;
+    padding: 15px 10px;
 }
 .search-form {
     position: absolute;
@@ -171,12 +180,16 @@ input.search {
     padding: 3px 4px;
     line-height: 1;
     border-radius: 4px;
-    color: #ce0606;
-    background-color: #fff6f6;
+    color: #965300;
+    background-color: #fff1ca;
+}
+.tag:visited  {
+    color: #965300;
 }
 .tag:hover {
     color: #fff;
-    background-color: #ce0606;
+    background-color: #965300;
+    text-decoration: none;
 }
 
 input[type="text"],
