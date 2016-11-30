@@ -1,5 +1,5 @@
 <%- include header %>
-<form method="post">
+<form method="post" action="/edit/<%= post._id %>">
   标题：<br />
   <input type="text" name="title" value="<%= post.title %>" disabled="disabled" /><br />
   标签：<br />
@@ -10,4 +10,41 @@
   <textarea name="post" rows="20" cols="100"><%= post.post %></textarea><br />
   <input type="submit" value="保存修改" />
 </form>
+<form id="imageForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="file">
+    <button id="upload" type="button">上传</button>
+</form>
+<progress value="0"></progress>
+<script type="text/javascript">
+$(function(){
+    $('#upload').on('click', function(){
+        var formData = new FormData($('#imageForm')[0]);
+        $.ajax({
+            url: '/post/upload/<%= post._id %>',
+            type: 'post',
+            cache: false,
+            contentType: false,
+            processData: false,
+            data: formData,
+            xhr: function(){
+                var myXhr = $.ajaxSettings.xhr();
+                if(myXhr.upload){
+                    myXhr.upload.addEventListener('progress',progressHandling, false);
+                }
+                return myXhr;
+            },
+            success: function(){},
+            error: function(){}
+        });
+    });
+});
+function progressHandling(e) {
+    if (e.lengthComputable) {
+        $('progress').attr({
+            value: e.loaded,
+            max: e.total
+        });
+    }
+}
+</script>
 <%- include footer %>

@@ -1,5 +1,6 @@
-var mongodb = require('./db')
-markdown = require('markdown').markdown;
+var mongodb = require('./db'),
+    markdown = require('markdown').markdown,
+    ObjectID = require('mongodb').ObjectID;
 
 function Post(name, title, tags, post) {
     this.name = name;
@@ -103,7 +104,7 @@ Post.getTen = function(name, page, callback) {
 };
 
 //获取一篇文章
-Post.getOne = function(name, day, title, callback) {
+Post.getOne = function(_id, callback) {
     //打开数据库
     mongodb.open(function(err, db) {
         if (err) {
@@ -117,9 +118,7 @@ Post.getOne = function(name, day, title, callback) {
             }
             //根据用户名、发表日期及文章名进行查询
             collection.findOne({
-                "name": name,
-                "time.day": day,
-                "title": title
+                "_id": new ObjectID(_id)
             }, function(err, doc) {
                 if (err) {
                     mongodb.close();
@@ -128,9 +127,7 @@ Post.getOne = function(name, day, title, callback) {
                 if (doc) {
                     //每访问 1 次，pv 值增加 1
                     collection.update({
-                        "name": name,
-                        "time.day": day,
-                        "title": title
+                        "_id": new ObjectID(_id)
                     }, {
                         $inc: {
                             "pv": 1
@@ -151,7 +148,7 @@ Post.getOne = function(name, day, title, callback) {
 };
 
 //返回原始发表的内容（markdown 格式）
-Post.edit = function(name, day, title, callback) {
+Post.edit = function(_id, callback) {
     //打开数据库
     mongodb.open(function(err, db) {
         if (err) {
@@ -165,9 +162,7 @@ Post.edit = function(name, day, title, callback) {
             }
             //根据用户名、发表日期及文章名进行查询
             collection.findOne({
-                "name": name,
-                "time.day": day,
-                "title": title
+                "_id": new ObjectID(_id)
             }, function(err, doc) {
                 mongodb.close();
                 if (err) {
@@ -180,7 +175,7 @@ Post.edit = function(name, day, title, callback) {
 };
 
 //更新一篇文章及其相关信息
-Post.update = function(name, day, title, post, callback) {
+Post.update = function(_id, post, callback) {
     //打开数据库
     mongodb.open(function(err, db) {
         if (err) {
@@ -194,9 +189,7 @@ Post.update = function(name, day, title, post, callback) {
             }
             //更新文章内容
             collection.update({
-                "name": name,
-                "time.day": day,
-                "title": title
+                "_id": new ObjectID(_id)
             }, {
                 $set: {
                     post: post
@@ -213,7 +206,7 @@ Post.update = function(name, day, title, post, callback) {
 };
 
 //删除一篇文章
-Post.remove = function(name, day, title, callback) {
+Post.remove = function(_id, callback) {
     //打开数据库
     mongodb.open(function(err, db) {
         if (err) {
@@ -227,9 +220,7 @@ Post.remove = function(name, day, title, callback) {
             }
             //查询要删除的文档
             collection.findOne({
-                "name": name,
-                "time.day": day,
-                "title": title
+                "_id": new ObjectID(_id)
             }, function(err, doc) {
                 if (err) {
                     mongodb.close();
@@ -238,9 +229,7 @@ Post.remove = function(name, day, title, callback) {
 
                 //删除转载来的文章所在的文档
                 collection.remove({
-                    "name": name,
-                    "time.day": day,
-                    "title": title
+                    "_id": new ObjectID(_id)
                 }, {
                     w: 1
                 }, function(err) {

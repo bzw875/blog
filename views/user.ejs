@@ -1,7 +1,7 @@
 <%- include header %>
 <% posts.forEach(function (post, index) { %>
   <p><h2>
-    <a href="/u/<%= post.name %>/<%= post.time.day %>/<%= post.title %>"><%= post.title %></a>
+    <a href="/u/<%= post._id %>"><%= post.title %></a>
     <a href="/u/<%= post.name %>"></a>
   </h2></p>
   <p class="info">

@@ -2,7 +2,8 @@ var crypto = require('crypto'),
     User = require('../models/user.js'),
     Post = require('../models/post.js'),
     multer = require('multer'),
-    setting = require('../settings.js');
+    setting = require('../settings.js'),
+    fs = require('fs');
 
 module.exports = function(app) {
     app.get('/', function(req, res) {
@@ -102,6 +103,11 @@ module.exports = function(app) {
         req.flash('success', '文件上传成功！');
         res.redirect('/upload');
     });
+
+    app.post('/post/upload/:_id', checkLogin);
+    app.post('/post/upload/:_id', postUpload.array('file', 5), function(req, res) {
+        res.json({ "status": "成功" });
+    })
 
     app.get('/archive', function(req, res) {
         Post.getArchive(function(err, posts) {
@@ -204,8 +210,8 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/u/:name/:day/:title', function(req, res) {
-        Post.getOne(req.params.name, req.params.day, req.params.title, function(err, post) {
+    app.get('/p/:_id', function(req, res) {
+        Post.getOne(req.params._id, function(err, post) {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -220,10 +226,10 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/edit/:name/:day/:title', checkLogin);
-    app.get('/edit/:name/:day/:title', function(req, res) {
+    app.get('/edit/:_id', checkLogin);
+    app.get('/edit/:_id', function(req, res) {
         var currentUser = req.session.user;
-        Post.edit(currentUser.name, req.params.day, req.params.title, function(err, post) {
+        Post.edit(req.params._id, function(err, post) {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('back');
@@ -238,11 +244,11 @@ module.exports = function(app) {
         });
     });
 
-    app.post('/edit/:name/:day/:title', checkLogin);
-    app.post('/edit/:name/:day/:title', function(req, res) {
+    app.post('/edit/:_id', checkLogin);
+    app.post('/edit/:_id', function(req, res) {
         var currentUser = req.session.user;
-        Post.update(currentUser.name, req.params.day, req.params.title, req.body.post, function(err) {
-            var url = encodeURI('/u/' + req.params.name + '/' + req.params.day + '/' + req.params.title);
+        Post.update(req.params._id, req.body.post, function(err) {
+            var url = encodeURI('/u/' + req.params._id);
             if (err) {
                 req.flash('error', err);
                 return res.redirect(url); //出错！返回文章页
@@ -252,10 +258,10 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/remove/:name/:day/:title', checkLogin);
-    app.get('/remove/:name/:day/:title', function(req, res) {
+    app.get('/remove/:_id', checkLogin);
+    app.get('/remove/:_id', function(req, res) {
         var currentUser = req.session.user;
-        Post.remove(currentUser.name, req.params.day, req.params.title, function(err) {
+        Post.remove(req.params._id, function(err) {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('back');
@@ -296,4 +302,23 @@ var storage = multer.diskStorage({
 });
 var upload = multer({
     storage: storage
+});
+
+
+var postStorage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        var dir = './public/images/upload/' + req.params._id;
+        if (!fs.existsSync(dir)) {
+            fs.mkdirSync(dir, 0755);
+        }
+        cb(null, dir);
+    },
+    filename: function(req, file, cb) {
+        var ext = file.originalname.split(/\./g);
+        ext = ext[ext.length - 1];
+        cb(null, req.params._id + Date.now() + '.' + ext)
+    }
+});
+var postUpload = multer({
+    storage: postStorage
 });
