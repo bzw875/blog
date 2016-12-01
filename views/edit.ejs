@@ -10,13 +10,17 @@
   <textarea name="post" rows="20" cols="100"><%= post.post %></textarea><br />
   <input type="submit" value="保存修改" />
 </form>
+
+<h3>图片管理</h3>
+<div class="images-list clearfix" id="imagesList"></div>
 <form id="imageForm" enctype="multipart/form-data">
-    <input type="file" name="file" id="file">
+    <input type="file" multiple name="file" id="file">
     <button id="upload" type="button">上传</button>
+    <progress id="img_progress" value="0"></progress>
 </form>
-<progress value="0"></progress>
 <script type="text/javascript">
 $(function(){
+    fetchImages();
     $('#upload').on('click', function(){
         var formData = new FormData($('#imageForm')[0]);
         $.ajax({
@@ -33,18 +37,56 @@ $(function(){
                 }
                 return myXhr;
             },
-            success: function(){},
+            success: function(){
+                $('#imageForm')[0].reset();
+                $('#img_progress').attr({
+                    value: 0,
+                    max: 0
+                });
+                fetchImages();
+            },
             error: function(){}
         });
     });
 });
 function progressHandling(e) {
     if (e.lengthComputable) {
-        $('progress').attr({
+        $('#img_progress').attr({
             value: e.loaded,
             max: e.total
         });
     }
+}
+function fetchImages() {
+    var imagesList = $("#imagesList");
+    imagesList.empty();
+    $.ajax({
+        url: '/post/images/<%= post._id%>',
+        type: 'get',
+        success: function(data){
+            $.each(data.images_url, function(i, url){
+                var arr = url.split('/');
+                arr = arr[arr.length - 1];
+                var div = '<div class="img-item">' +
+                    '<img src="' + url + '">' +
+                    '<a href="javascript:;" onclick="removeImg(\'' + arr + '\')">删除</a>'
+                '</div>';
+
+                imagesList.append(div);
+            });
+        }
+    });
+}
+function removeImg(img) {
+    $.ajax({
+        url: '/post/image/remove/<%= post._id %>/' + img,
+        type: 'get',
+        success: function(text){
+            if (text == '删除成功') {
+                fetchImages();
+            }
+        }
+    });
 }
 </script>
 <%- include footer %>

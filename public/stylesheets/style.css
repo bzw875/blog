@@ -230,3 +230,16 @@ input[type="submit"] {
     display: inline;
     width: auto;
 }
+.images-list img {
+    display: block;
+    width: auto;
+    height: 100px;
+}
+.img-item {
+    float: left;
+    padding: 4px;
+    margin: 6px;
+    border: 1px solid #ddd;
+    background-color: #fff;
+    border-radius: 4px;
+}

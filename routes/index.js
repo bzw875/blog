@@ -107,7 +107,18 @@ module.exports = function(app) {
     app.post('/post/upload/:_id', checkLogin);
     app.post('/post/upload/:_id', postUpload.array('file', 5), function(req, res) {
         res.json({ "status": "成功" });
-    })
+    });
+
+    app.get('/post/image/remove/:_id/:url', checkLogin);
+    app.get('/post/image/remove/:_id/:url', function(req, res) {
+        var dir =  './public/images/upload/' + req.params._id + '/' + req.params.url;
+        if (fs.existsSync(dir)) {
+            fs.unlinkSync(dir);
+            res.send('删除成功');
+        } else {
+            res.send('文件找不到');
+        }
+    });
 
     app.get('/archive', function(req, res) {
         Post.getArchive(function(err, posts) {
@@ -228,12 +239,13 @@ module.exports = function(app) {
 
     app.get('/edit/:_id', checkLogin);
     app.get('/edit/:_id', function(req, res) {
-        var currentUser = req.session.user;
         Post.edit(req.params._id, function(err, post) {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('back');
             }
+
+
             res.render('edit', {
                 title: '编辑',
                 post: post,
@@ -244,9 +256,27 @@ module.exports = function(app) {
         });
     });
 
+    app.get('/post/images/:_id', checkLogin);
+    app.get('/post/images/:_id', function(req, res) {
+        var images_url = [];
+        var dir = './public/images/upload/' + req.params._id;
+        if (fs.existsSync(dir)) {
+            var files = fs.readdirSync(dir);
+            files.forEach(function(item) {
+                var imgPath = dir + '/' + item;
+                var stats = fs.statSync(imgPath);
+                if (!stats.isDirectory()){
+                    images_url.push(imgPath.replace('./public', ''));
+                }
+            });
+        }
+        res.json({
+            "images_url": images_url
+        });
+    });
+
     app.post('/edit/:_id', checkLogin);
     app.post('/edit/:_id', function(req, res) {
-        var currentUser = req.session.user;
         Post.update(req.params._id, req.body.post, function(err) {
             var url = encodeURI('/u/' + req.params._id);
             if (err) {
@@ -260,7 +290,6 @@ module.exports = function(app) {
 
     app.get('/remove/:_id', checkLogin);
     app.get('/remove/:_id', function(req, res) {
-        var currentUser = req.session.user;
         Post.remove(req.params._id, function(err) {
             if (err) {
                 req.flash('error', err);
