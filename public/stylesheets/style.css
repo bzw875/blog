@@ -1,10 +1,11 @@
 body {
-    font-family: 'Sabon_roman', Arial, Helvetica, sans-serif;
+    font-family: -apple-system,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
     font-weight: 400;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 1.42857143;
     color: #333;
     background-color: #fff;
+    background-image: url(../images/smbg.png);
 }
 * {
   -webkit-box-sizing: border-box;
@@ -17,6 +18,22 @@ body {
      -moz-box-sizing: border-box;
           box-sizing: border-box;
 }
+code {
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+    word-break: break-all;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    background-color: #f5f5f5;
+    border-radius: 4px;
+}
+hr {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 0;
+    border-top: 1px solid #eee;
+}
 a {
     color: #1a0dab;
     text-decoration: none;
@@ -26,10 +43,6 @@ a:visited {
 }
 a:hover {
     text-decoration: underline;
-}
-ul,
-ol {
-    padding: 0;
 }
 .clearfix:before, .clearfix:after {
     display: table;
@@ -77,7 +90,10 @@ ol {
 
 .index-nav {
     width: 100%;
-    border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    background-color: #fff;
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
 .index-nav>nav {
     width: 960px;
@@ -95,7 +111,7 @@ ol {
     text-decoration: none;
 }
 .menu-list {
-    margin-top: 20px;
+    margin-top: 14px;
     width: 800px;
     text-align: right;
 }
@@ -162,7 +178,11 @@ input.search {
 }
 .main-body {
     width: 960px;
-    margin: 0 auto;
+    min-height: 768px;
+    margin: 30px auto 0 auto;
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 1px 2px 5px rgba(0,0,0,0.1);
 }
 .info {
     color: #999;

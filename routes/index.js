@@ -1,5 +1,4 @@
 var crypto = require('crypto'),
-    User = require('../models/user.js'),
     Post = require('../models/post.js'),
     multer = require('multer'),
     setting = require('../settings.js'),
@@ -193,34 +192,6 @@ module.exports = function(app) {
         });
     });
 
-    app.get('/u/:name', function(req, res) {
-        var page = parseInt(req.query.p) || 1;
-        //检查用户是否存在
-        User.get(req.params.name, function(err, user) {
-            if (!user) {
-                req.flash('error', '用户不存在!');
-                return res.redirect('/');
-            }
-            //查询并返回该用户第 page 页的 10 篇文章
-            Post.getTen(user.name, page, function(err, posts, total) {
-                if (err) {
-                    req.flash('error', err);
-                    return res.redirect('/');
-                }
-                res.render('user', {
-                    title: user.name,
-                    posts: posts,
-                    page: page,
-                    isFirstPage: (page - 1) == 0,
-                    isLastPage: ((page - 1) * 10 + posts.length) == total,
-                    user: req.session.user,
-                    success: req.flash('success').toString(),
-                    error: req.flash('error').toString()
-                });
-            });
-        });
-    });
-
     app.get('/p/:_id', function(req, res) {
         Post.getOne(req.params._id, function(err, post) {
             if (err) {
@@ -244,7 +215,6 @@ module.exports = function(app) {
                 req.flash('error', err);
                 return res.redirect('back');
             }
-
 
             res.render('edit', {
                 title: '编辑',
@@ -278,7 +248,7 @@ module.exports = function(app) {
     app.post('/edit/:_id', checkLogin);
     app.post('/edit/:_id', function(req, res) {
         Post.update(req.params._id, req.body.post, function(err) {
-            var url = encodeURI('/u/' + req.params._id);
+            var url = encodeURI('/p/' + req.params._id);
             if (err) {
                 req.flash('error', err);
                 return res.redirect(url); //出错！返回文章页
@@ -290,11 +260,13 @@ module.exports = function(app) {
 
     app.get('/remove/:_id', checkLogin);
     app.get('/remove/:_id', function(req, res) {
-        Post.remove(req.params._id, function(err) {
+        var id = req.params._id;
+        Post.remove(id, function(err) {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('back');
             }
+            deleteFolderRecursive('./public/images/upload/' + id);
             req.flash('succss', '删除成功！');
             res.redirect('/');
         });
@@ -323,7 +295,7 @@ module.exports = function(app) {
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, './public/images')
+        cb(null, './public/images/upload/')
     },
     filename: function(req, file, cb) {
         cb(null, file.originalname)
@@ -351,3 +323,20 @@ var postStorage = multer.diskStorage({
 var postUpload = multer({
     storage: postStorage
 });
+
+var deleteFolderRecursive = function(path) {
+    if( fs.existsSync(path) ) {
+        fs.readdirSync(path).forEach(function(file,index){
+            var curPath = path + "/" + file;
+            if(fs.lstatSync(curPath).isDirectory()) {
+                console.log('folder: ' + curPath);
+                deleteFolderRecursive(curPath);
+            } else {
+                console.log('file: ' + curPath);
+                fs.unlinkSync(curPath);
+            }
+        });
+        console.log(path);
+        fs.rmdirSync(path);
+    }
+};

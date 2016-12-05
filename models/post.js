@@ -1,6 +1,7 @@
 var mongodb = require('./db'),
     markdown = require('markdown').markdown,
-    ObjectID = require('mongodb').ObjectID;
+    ObjectID = require('mongodb').ObjectID,
+    async = require('async');
 
 function Post(name, title, tags, post) {
     this.name = name;
@@ -59,47 +60,47 @@ Post.prototype.save = function(callback) {
 
 //一次获取十篇文章
 Post.getTen = function(name, page, callback) {
-    //打开数据库
-    mongodb.open(function(err, db) {
-        if (err) {
-            return callback(err);
-        }
-        //读取 posts 集合
-        db.collection('posts', function(err, collection) {
-            if (err) {
-                mongodb.close();
-                return callback(err);
-            }
+    async.waterfall([
+        function (cb) {
+            mongodb.open(function(err, db) {
+                cb(err, db);
+            });
+        },
+        function (db, cb) {
+            db.collection('posts', function(err, collection) {
+                cb(err, collection);
+            });
+        },
+        function(collection, cb) {
             var query = {};
             if (name) {
                 query.name = name;
             }
-            //使用 count 返回特定查询的文档数 total
             collection.count(query, function(err, total) {
-                //根据 query 对象查询，并跳过前 (page-1)*10 个结果，返回之后的 10 个结果
-                collection.find(query, {
-                    skip: (page - 1) * 10,
-                    limit: 10
-                }).sort({
-                    time: -1
-                }).toArray(function(err, docs) {
-                    mongodb.close();
-                    if (err) {
-                        return callback(err);
+                cb(err, collection, query, total);
+            })
+        },
+        function (collection, query, total, cb) {
+            collection.find(query, {
+                skip: (page - 1) * 10,
+                limit: 10
+            }).sort({
+                time: -1
+            }).toArray(function(err, docs) {
+                docs.forEach(function(doc) {
+                    var post = doc.post;
+                    if (post.length > 200) {
+                       doc.post = markdown.toHTML(post.slice(0, 200) + '......'); 
+                    } else {
+                        doc.post = markdown.toHTML(post);
                     }
-                    //解析 markdown 为 html
-                    docs.forEach(function(doc) {
-                        var post = doc.post;
-                        if (post.length > 200) {
-                           doc.post = markdown.toHTML(post.slice(0, 200) + '......'); 
-                        } else {
-                            doc.post = markdown.toHTML(post);
-                        }
-                    });
-                    callback(null, docs, total);
                 });
+                cb(err, docs, total);
             });
-        });
+        }
+    ], function (err, docs, total) {
+        mongodb.close();
+        callback(err, docs, total);
     });
 };
 
