@@ -167,9 +167,9 @@ module.exports = function(app) {
       });
     });
 
-    app.get('/links', function (req, res) {
-      res.render('links', {
-        title: '友情链接',
+    app.get('/about', function (req, res) {
+      res.render('about', {
+        title: '关于本站',
         user: req.session.user,
         success: req.flash('success').toString(),
         error: req.flash('error').toString()
@@ -199,7 +199,7 @@ module.exports = function(app) {
                 return res.redirect('/');
             }
             res.render('article', {
-                title: req.params.title,
+                title: post.title,
                 post: post,
                 user: req.session.user,
                 success: req.flash('success').toString(),

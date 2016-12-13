@@ -1,9 +1,8 @@
 <%- include header %>
-<h3><%= post.title %></h3>
 <p>
   <% if (user && (user.name == post.name)) { %>
-    <span><a class="edit" href="/edit/<%= post._id %>">编辑</a></span>
-    <span><a class="edit" href="/remove/<%= post._id %>">删除</a></span>
+    <span><a class="edit" title="编辑" href="/edit/<%= post._id %>"><img src="/images/penci.png"></a></span>
+    <span><a class="edit" title="删除" href="/remove/<%= post._id %>"><img src="/images/trash.png"></a></span>
   <% } %>
 </p>
 <p class="info">
