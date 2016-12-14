@@ -1,11 +1,13 @@
 body {
-    font-family: -apple-system,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
     font-weight: 400;
     font-size: 14px;
     line-height: 1.42857143;
     padding-bottom: 100px;
     color: #333;
     background-color: #fff;
+}
+body, button, input, optgroup, select, textarea {
+    font-family: -apple-system,"Helvetica Neue",Arial,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","WenQuanYi Micro Hei",sans-serif;
 }
 * {
   -webkit-box-sizing: border-box;
@@ -35,14 +37,17 @@ hr {
     border-top: 1px solid #eee;
 }
 a {
-    color: #1a0dab;
+    color: #42AB9E;
     text-decoration: none;
 }
-a:visited {
-    color: #609;
-}
 a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+}
+button:focus,
+textarea:focus,
+select:focus,
+[type="text"]:focus {
+  outline: none;
 }
 .clearfix:before, .clearfix:after {
     display: table;
@@ -196,11 +201,8 @@ input.search {
     padding: 3px 4px;
     line-height: 1;
     border-radius: 4px;
-    color: #965300;
-    background-color: #fff1ca;
-}
-.tag:visited  {
-    color: #965300;
+    color: #df5a5a;
+    background-color: #fff2f2;
 }
 .tag:hover {
     text-decoration: none;
@@ -225,17 +227,20 @@ button,
 input[type="button"],
 input[type="reset"],
 input[type="submit"] {
-    color: #ffffff;
-    font-family: inherit;
-    font-size: 1em;
-    padding: 4px 22px;
-    text-shadow: 0 -1px #933333;
-    border: 1px solid #e77b7b;
+    cursor: pointer;
+    background-color: #fff;
+    padding: .5em 2em;
+    border-width: 1px;
+    border-color: #ddd;
+    border-style: solid;
     border-radius: 4px;
-    background-color: #ce0606;
-    background: linear-gradient(to bottom, #e85050, #d02f2f);
-    box-shadow: 1px 0 1px #d0a3a3;
-    line-height: 16px;
+    -webkit-transition: background-color .3s;
+}
+button:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover,
+input[type="submit"]:hover {
+    background-color: #ddd;
 }
 .login-form {
     width: 320px;
@@ -256,4 +261,7 @@ input[type="submit"] {
     border: 1px solid #ddd;
     background-color: #fff;
     border-radius: 4px;
+}
+.edit {
+    margin-right: 1em;
 }

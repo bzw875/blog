@@ -25,11 +25,18 @@ Post.prototype.save = function(callback) {
             date.getHours() + ":" + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
     };
     //要存入数据库的文档
+    var tags = this.tags;
+    for (var i = 0; i < tags.length; i++) {
+        if (tags[i] == '') {
+            tags.splice(i, 1);
+            i--;
+        }
+    }
     var post = {
         name: this.name,
         time: time,
         title: this.title,
-        tags: this.tags,
+        tags: tags,
         post: this.post,
         pv: 0
     };
@@ -89,7 +96,7 @@ Post.getTen = function(name, page, callback) {
                 docs.forEach(function(doc) {
                     var post = doc.post;
                     if (post.length > 200) {
-                        doc.post = markdown.toHTML(post.slice(0, 200) + '......');
+                        doc.post = markdown.toHTML(post.slice(0, 400) + '......');
                     } else {
                         doc.post = markdown.toHTML(post);
                     }
@@ -177,6 +184,17 @@ Post.edit = function(_id, callback) {
 
 //更新一篇文章及其相关信息
 Post.update = function(_id, post, callback) {
+    var tags = post.tags;
+    if (tags && tags.length > 0) {
+        for (var i = 0; i < tags.length; i++) {
+            if (tags[i] == '') {
+                tags.splice(i, 1);
+                i--;
+            }
+        }
+    }
+    post.tags = tags;
+
     async.waterfall([
         function(cb) {
             mongodb.open(function(err, db) {

@@ -5,6 +5,7 @@
     <title><%= title %></title>
     <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
     <link rel="stylesheet" href="/stylesheets/normalize.css">
+    <link rel="stylesheet" href="/stylesheets/fonts.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
     <script src="/javascripts/jquery.min.js"></script>
     <script src="/javascripts/app.js"></script>
@@ -24,7 +25,7 @@
                 <a href="/post">发表</a>
                 <a href="/logout">登出</a>
                 <% } %>
-                <a href="javascript:;" class="search-icon" id="search_btn"><img src="/images/search.png"></a>
+                <a href="javascript:;" class="search-icon" id="search_btn"><span class="glyphicon glyphicon-search"></span></a>
                 <a href="/about">关于</a>
             </div>
         </nav>
@@ -32,7 +33,7 @@
     <div id="searchForm" class="search-form">
         <form action="/search" method="GET">
             <input type="text" name="keyword" placeholder="SEARCH" class="search">
-            <a href="javascript:;"><img src="/images/search.png"></a>
+            <a href="javascript:;"><span class="glyphicon glyphicon-search"></span></a>
         </form>
     </div>
     <div class="main-body">
