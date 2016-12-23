@@ -184,17 +184,6 @@ Post.edit = function(_id, callback) {
 
 //更新一篇文章及其相关信息
 Post.update = function(_id, post, callback) {
-    var tags = post.tags;
-    if (tags && tags.length > 0) {
-        for (var i = 0; i < tags.length; i++) {
-            if (tags[i] == '') {
-                tags.splice(i, 1);
-                i--;
-            }
-        }
-    }
-    post.tags = tags;
-
     async.waterfall([
         function(cb) {
             mongodb.open(function(err, db) {

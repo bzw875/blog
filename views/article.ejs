@@ -6,13 +6,15 @@
   <% } %>
 </p>
 <p class="info">
-  日期：<%= post.time.minute %>
-  标签：
+  <span title="日期" class="glyphicon glyphicon-time"></span> <%= post.time.minute %>
+    <% if (post.tags.length>0) { %>
+    <span title="标签" class="glyphicon glyphicon-tags"></span>
     <% post.tags.forEach(function (tag, index) { %>
       <% if (tag) { %>
         <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
       <% } %>
     <% }) %>
+    <% } %>
 </p>
 <p><%- post.post %></p>
 <p class="info">

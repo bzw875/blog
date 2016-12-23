@@ -130,6 +130,7 @@ select:focus,
     border-bottom: 1px solid transparent;
     -webkit-transition: border-bottom-color 0.3s;
 }
+a.current,
 .menu-list a:hover {
     color: #000;
     border-bottom-color: #000;

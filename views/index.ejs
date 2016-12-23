@@ -5,7 +5,6 @@
   <p class="info">
     <span title="日期" class="glyphicon glyphicon-time"></span> <%= post.time.minute %>
     <% if (post.tags.length>0) { %>
-    <%= post.tags.length %>
        | <span title="标签" class="glyphicon glyphicon-tags"></span>
       <% post.tags.forEach(function (tag, index) { %>
         <% if (tag) { %>
