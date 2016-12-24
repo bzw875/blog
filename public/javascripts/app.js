@@ -8,4 +8,10 @@ $(function(){
             $('#searchForm').removeClass('open-search');
         }
     });
+    var href = location.href;
+    $('.index-nav a').each(function(){
+        if (href == this.href) {
+            $(this).addClass('current');
+        }
+    });
 });
