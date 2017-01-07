@@ -169,7 +169,7 @@ module.exports = function(app) {
 
     app.get('/about', function (req, res) {
       res.render('about', {
-        title: '关于本站',
+        title: '关于我',
         user: req.session.user,
         success: req.flash('success').toString(),
         error: req.flash('error').toString()
