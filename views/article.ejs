@@ -1,4 +1,5 @@
 <%- include header %>
+<h2><%- post.title %></h2>
 <p>
   <% if (user && (user.name == post.name)) { %>
     <span><a class="edit" href="/edit/<%= post._id %>"><span class="glyphicon glyphicon-pencil"></span> 编辑</a></span>

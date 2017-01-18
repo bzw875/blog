@@ -1,12 +1,19 @@
 <%- include header %>
 <ul class="archive">
-<% var lastYear = 0 %>
+<% var lastYear = 0, lastMonth = 0; %>
 <% posts.forEach(function (post, index) { %>
+
   <% if (lastYear != post.time.year) { %>
-    <li><h3><%= post.time.year %></h3></li>
+    <li><h1><%= post.time.year %>年</h1></li>
   <% lastYear=post.time.year } %>
+
+  <% if (lastMonth != post.time.month) { %>
+    <li><h2><%= post.time.month.split('-')[1] %>月</h2></li>
+  <% lastMonth=post.time.month } %>
+
   <li><time><%= post.time.day %></time></li>
   <li><a href="/p/<%= post._id %>"><%= post.title %></a></li>
 <% }) %>
 </ul>
 <%- include footer %>
+

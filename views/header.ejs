@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="/stylesheets/normalize.css">
     <link rel="stylesheet" href="/stylesheets/fonts.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
-    <script src="/javascripts/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/moment.js/2.16.0/moment-with-locales.min.js"></script>
     <script src="/javascripts/app.js"></script>
 </head>
 <body>
@@ -37,8 +38,6 @@
         </form>
     </div>
     <div class="main-body">
-        <h2><%= title %></h2>
-        <hr>
         <% if (success) { %>
           <div><%= success %></div>
         <% } %>

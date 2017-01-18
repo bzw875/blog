@@ -3,7 +3,8 @@
   <article>
     <p><h3><a href="/p/<%= post._id %>"><%= post.title %></a></h3>
   <p class="info">
-    <span title="日期" class="glyphicon glyphicon-time"></span> <%= post.time.minute %>
+    <span title="日期" class="glyphicon glyphicon-time"></span>
+    <span data-date="<%= post.time.date.toString() %>"><%= post.time.minute %></span>
     <% if (post.tags.length>0) { %>
        | <span title="标签" class="glyphicon glyphicon-tags"></span>
       <% post.tags.forEach(function (tag, index) { %>

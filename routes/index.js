@@ -14,7 +14,7 @@ module.exports = function(app) {
                 posts = [];
             }
             res.render('index', {
-                title: '主页',
+                title: 'Blog',
                 posts: posts,
                 page: page,
                 isFirstPage: (page - 1) == 0,

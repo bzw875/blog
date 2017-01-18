@@ -14,4 +14,14 @@ $(function(){
             $(this).addClass('current');
         }
     });
+    $('[data-date]').each(function(){
+        var self = $(this);
+
+        var str = self.data('date');
+        str = new Date(str);
+        moment.locale('zh-cn');
+        str = moment(str).fromNow();
+        
+        self.text(str);
+    });
 });
