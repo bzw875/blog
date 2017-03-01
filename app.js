@@ -30,7 +30,7 @@ app.use(logger({ stream: assessLog }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public'), { maxage: 86400 * 365 }));
 app.use(function (err, req, res, next) {
   var meta = '[' + new Date() + '] ' + req.url + '\n';
   errorLog.write(meta + err.stack + '\n');

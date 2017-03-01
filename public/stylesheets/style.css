@@ -182,7 +182,6 @@ input.search {
 }
 .main-body {
     width: 960px;
-    min-height: 768px;
     margin: 30px auto 0 auto;
     background-color: #fff;
 }
