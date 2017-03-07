@@ -25,6 +25,11 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "grunt": "",
+    "grunt-contrib-cssmin": "^2.0.0",
+    "grunt-contrib-levin-usemin": "",
+    "grunt-contrib-uglify": "^2.2.0",
+    "grunt-rev": "",
     "html-webpack-plugin": "^2.28.0"
   }
 }
