@@ -265,3 +265,19 @@ input[type="submit"]:hover {
 .edit {
     margin-right: 1em;
 }
+@media screen and (max-width:768px){
+    .index-nav>nav {
+        width: 100%;
+        padding: 0 10px;
+    }
+    .menu-list {
+        width: auto;
+    }
+    .main-body {
+        width: 100%;
+        padding: 0 10px;
+    }
+    .menu-list a {
+        margin-left: .5em;
+    }
+}
