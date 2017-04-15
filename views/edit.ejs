@@ -1,5 +1,5 @@
 <%- include header %>
-<form method="post" action="/edit/<%= post._id %>">
+<form id="myform" method="post" action="/edit/<%= post._id %>">
   标题：<br />
   <input type="text" name="title" value="<%= post.title %>" disabled="disabled" /><br />
   标签：<br />
@@ -7,8 +7,15 @@
   <input type="text" name="tag2" value="<%= post.tags[1] %>" disabled="disabled" />
   <input type="text" name="tag3" value="<%= post.tags[2] %>" disabled="disabled" /><br />
   正文：<br />
-  <textarea name="post" rows="20" cols="100"><%= post.post %></textarea><br />
-  <input type="submit" value="保存修改" />
+  <textarea id="postText" data-postid="<%= post._id %>" name="post" rows="30" style="width:100%"><%= post.post %></textarea><br />
+  <p>
+      <input type="submit" value="保存修改" />
+      <button id="showDraft" type="button" style="display: none;">草稿</button>
+  </p>
+  <div id="draftBox" style="display: none;">
+      草稿: <a href="javascript:;" onclick="hideDraft();">隐藏</a>
+      <textarea rows="30" style="width:100%"></textarea>
+  </div>
 </form>
 
 <h3>图片管理</h3>
@@ -19,6 +26,7 @@
     <progress id="img_progress" value="0"></progress>
 </form>
 <script type="text/javascript">
+var lastChangeTime;
 $(function(){
     fetchImages();
     $('#upload').on('click', function(){
@@ -47,6 +55,27 @@ $(function(){
             },
             error: function(){}
         });
+    });
+    lastChangeTime = new Date();
+    var postText = $('#postText');
+    var postid = postText.data('postid');
+    postText.change(function(){
+        if ((new Date().getTime() - lastChangeTime.getTime()) < 1000) {
+            return;
+        }
+        localStorage.setItem('draft' + postid, postText.val());
+    });
+    var draft = localStorage.getItem('draft' + postid);
+    var post = $('#postText').val();
+    if (draft && draft.length !== post.length) {
+        $('#showDraft').show()
+            .click(function(){
+                $('#draftBox').show().find('textarea').val(draft);
+            });
+    }
+    $('#myform').submit(function() {
+        localStorage.removeItem('draft' + postid);
+        return true;
     });
 });
 function progressHandling(e) {
@@ -87,6 +116,9 @@ function removeImg(img) {
             }
         }
     });
+}
+function hideDraft() {
+    $('#draftBox').hide();
 }
 </script>
 <%- include footer %>
