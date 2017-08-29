@@ -1,12 +1,16 @@
 <%- include header %>
 <form class="post-form" method="post">
-    <p><label>标题</label></p>
-    <p><input type="text" name="title"></p>
+    <p><input class="title-input" type="text" placeholder="标题..." name="title"></p>
     <p><label>标签</label></p>
     <p class="tag-input">
         <input type="text" name="tag1">
         <input type="text" name="tag2">
         <input type="text" name="tag3">
+    </p>
+    <p><label>类型</label></p>
+    <p>
+        <label><input type="radio" name="contentType" value="Markdown" checked>Markdown</label>
+        <label><input type="radio" name="contentType" value="HTML">HTML</label>
     </p>
     <p><label>正文</label></p>
     <p><textarea name="post" rows="50" cols="100"></textarea></p>

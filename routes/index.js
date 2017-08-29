@@ -17,7 +17,7 @@ module.exports = function(app) {
                 title: 'Blog',
                 posts: posts,
                 page: page,
-                isFirstPage: (page - 1) == 0,
+                isFirstPage: (page - 1) === 0,
                 isLastPage: ((page - 1) * 10 + posts.length) == total,
                 user: req.session.user,
                 success: req.flash('success').toString(),
@@ -68,7 +68,7 @@ module.exports = function(app) {
     app.post('/post', function(req, res) {
         var currentUser = req.session.user,
             tags = [req.body.tag1, req.body.tag2, req.body.tag3],
-            post = new Post(currentUser.name, req.body.title, tags, req.body.post);
+            post = new Post(currentUser.name, req.body.title, tags, req.body.post, req.body.contentType);
             
         post.save(function(err) {
             if (err) {
@@ -295,10 +295,10 @@ module.exports = function(app) {
 
 var storage = multer.diskStorage({
     destination: function(req, file, cb) {
-        cb(null, './public/images/upload/')
+        cb(null, './public/images/upload/');
     },
     filename: function(req, file, cb) {
-        cb(null, file.originalname)
+        cb(null, file.originalname);
     }
 });
 var upload = multer({
@@ -317,7 +317,7 @@ var postStorage = multer.diskStorage({
     filename: function(req, file, cb) {
         var ext = file.originalname.split(/\./g);
         ext = ext[ext.length - 1];
-        cb(null, req.params._id + Date.now() + '.' + ext)
+        cb(null, req.params._id + Date.now() + '.' + ext);
     }
 });
 var postUpload = multer({

@@ -1,11 +1,12 @@
 <%- include header %>
 <form id="myform" method="post" action="/edit/<%= post._id %>">
-  标题：<br />
-  <input type="text" name="title" value="<%= post.title %>" disabled="disabled" /><br />
+    <h2><%= post.title %></h2>
   标签：<br />
-  <input type="text" name="tag1" value="<%= post.tags[0] %>" disabled="disabled" />
-  <input type="text" name="tag2" value="<%= post.tags[1] %>" disabled="disabled" />
-  <input type="text" name="tag3" value="<%= post.tags[2] %>" disabled="disabled" /><br />
+  <p class="tag-input">
+    <input type="text" name="tag1" value="<%= post.tags[0] %>" disabled="disabled" />
+    <input type="text" name="tag2" value="<%= post.tags[1] %>" disabled="disabled" />
+    <input type="text" name="tag3" value="<%= post.tags[2] %>" disabled="disabled" />
+  </p>
   正文：<br />
   <textarea id="postText" data-postid="<%= post._id %>" name="post" rows="30" style="width:100%"><%= post.post %></textarea><br />
   <p>
@@ -18,13 +19,16 @@
   </div>
 </form>
 
-<h3>图片管理</h3>
-<div class="images-list clearfix" id="imagesList"></div>
-<form id="imageForm" enctype="multipart/form-data">
-    <input type="file" multiple name="file" id="file">
-    <button id="upload" type="button">上传</button>
-    <progress id="img_progress" value="0"></progress>
-</form>
+
+<fieldset>
+    <legend>图片管理</legend>
+    <div class="images-list clearfix" id="imagesList"></div>
+    <form id="imageForm" enctype="multipart/form-data">
+        <p><input type="file" multiple name="file" id="file"></p>
+        <p><progress style="width:100%" id="img_progress" value="0"></progress></p>
+        <button id="upload" type="button">上传</button>
+    </form>
+</fieldset>
 <script type="text/javascript">
 var lastChangeTime;
 $(function(){

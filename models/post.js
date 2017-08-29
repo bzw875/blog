@@ -3,9 +3,10 @@ var mongodb = require('./db'),
     ObjectID = require('mongodb').ObjectID,
     async = require('async');
 
-function Post(name, title, tags, post) {
+function Post(name, title, tags, post, contentType) {
     this.name = name;
     this.title = title;
+    this.contentType = contentType;
     this.tags = tags;
     this.post = post;
 }
@@ -27,7 +28,7 @@ Post.prototype.save = function(callback) {
     //要存入数据库的文档
     var tags = this.tags;
     for (var i = 0; i < tags.length; i++) {
-        if (tags[i] == '') {
+        if (tags[i] === '') {
             tags.splice(i, 1);
             i--;
         }
@@ -36,6 +37,7 @@ Post.prototype.save = function(callback) {
         name: this.name,
         time: time,
         title: this.title,
+        contentType: this.contentType,
         tags: tags,
         post: this.post,
         pv: 0
@@ -56,7 +58,7 @@ Post.prototype.save = function(callback) {
                 safe: true
             }, function(err) {
                 cb(err);
-            })
+            });
         }
     ], function(err) {
         mongodb.close();
@@ -84,7 +86,7 @@ Post.getTen = function(name, page, callback) {
             }
             collection.count(query, function(err, total) {
                 cb(err, collection, query, total);
-            })
+            });
         },
         function(collection, query, total, cb) {
             collection.find(query, {
@@ -96,10 +98,9 @@ Post.getTen = function(name, page, callback) {
                 docs.forEach(function(doc) {
                     var post = doc.post;
                     if (post.length > 200) {
-                        doc.post = markdown.toHTML(post.slice(0, 400) + '......');
-                    } else {
-                        doc.post = markdown.toHTML(post);
+                        post = post.slice(0, 400) + '......';
                     }
+                    doc.post = markdown.toHTML(post);
                 });
                 cb(err, docs, total);
             });
@@ -117,7 +118,7 @@ Post.getOne = function(_id, callback) {
         function(cb) {
             mongodb.open(function(err, db) {
                 cb(err, db);
-            })
+            });
         },
         function(db, cb) {
             db.collection('posts', function(err, collection) {
@@ -129,7 +130,7 @@ Post.getOne = function(_id, callback) {
                 "_id": new ObjectID(_id)
             }, function(err, doc) {
                 cb(err, collection, doc);
-            })
+            });
         },
         function(collection, doc, cb) {
             if (cb) {
@@ -150,9 +151,13 @@ Post.getOne = function(_id, callback) {
         }
     ], function(err, doc) {
         mongodb.close();
-        doc.post = markdown.toHTML(doc.post);
+        var post = doc.post;
+
+        if (doc.contentType !== 'HTML') {
+            doc.post = markdown.toHTML(post);
+        }
         callback(err, doc);
-    })
+    });
 };
 
 //返回原始发表的内容（markdown 格式）
@@ -178,7 +183,7 @@ Post.edit = function(_id, callback) {
         }
     ], function(err, doc) {
         mongodb.close();
-        callback(err, doc)
+        callback(err, doc);
     });
 };
 
@@ -204,7 +209,7 @@ Post.update = function(_id, post, callback) {
                 }
             }, function(err) {
                 cb(err);
-            })
+            });
         }
     ], function(err) {
         mongodb.close();

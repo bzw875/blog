@@ -219,7 +219,6 @@ textarea {
 }
 input[type="text"],
 input[type="password"] {
-    display: block;
     width: 100%;
     height: 24px;
 }
@@ -280,4 +279,13 @@ input[type="submit"]:hover {
     .menu-list a {
         margin-left: .5em;
     }
+}
+input.title-input {
+    font-size: 21px;
+    line-height: 30px;
+    height: 30px;
+    border-width: 0 0 1px 0;
+}
+.tag-input input {
+    width: 8em;
 }
