@@ -8,16 +8,16 @@ $(function(){
             $('#searchForm').removeClass('open-search');
         }
     });
-    var href = location.href;
+    const href = location.href;
     $('.index-nav a').each(function(){
         if (href == this.href) {
             $(this).addClass('current');
         }
     });
     $('[data-date]').each(function(){
-        var self = $(this);
+        const self = $(this);
 
-        var str = self.data('date');
+        let str = self.data('date');
         str = new Date(str);
         moment.locale('zh-cn');
         str = moment(str).fromNow();
@@ -26,6 +26,6 @@ $(function(){
     });
 });
 function isCanvasSupported(){
-  var elem = document.createElement('canvas');
+  const elem = document.createElement('canvas');
   return !!(elem.getContext && elem.getContext('2d'));
 }

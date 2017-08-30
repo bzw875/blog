@@ -1,7 +1,6 @@
-var settings = require('../settings'),
-    Db = require('mongodb').Db,
-    Connection = require('mongodb').Connection,
-    Server = require('mongodb').Server;
+const settings = require('../settings');
+const Db = require('mongodb').Db;
+const Server = require('mongodb').Server;
 
 module.exports = new Db(
     settings.db,

@@ -1,4 +1,4 @@
-module.exports = function(grunt) {
+module.exports = function (grunt) {
     grunt.initConfig({
         rev: {
             options: {
@@ -8,20 +8,20 @@ module.exports = function(grunt) {
             },
             assets: {
                 src: [
-                 'public/javascripts/**/*.js',
-                 'public/stylesheets/**/*.css',
+                    'public/javascripts/**/*.js',
+                    'public/stylesheets/**/*.css',
                 ]
             }
         },
         usemin: {
-            css:{
-                files:{
-                    src:['public/stylesheets/**/*.css']
+            css: {
+                files: {
+                    src: ['public/stylesheets/**/*.css']
                 }
             },
-            js:['public/javascripts/**/*.js'],
-            html:['views/**/*.ejs'],
-            options:{
+            js: ['public/javascripts/**/*.js'],
+            html: ['views/**/*.ejs'],
+            options: {
                 assetsDirs: ['static', 'public/'],
                 patterns: {
                     js: [[/(\/public\/images\/[\/\w-]+\.jpg)/, 'replace image in js']]
