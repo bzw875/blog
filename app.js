@@ -55,9 +55,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 30
     },
     store: new MongoStore({
-        db: settings.db,
-        host: settings.host,
-        port: settings.port
+        url: 'mongodb://' + settings.host + ':' + settings.port + '/' + settings.db,
     })
 }));
 
