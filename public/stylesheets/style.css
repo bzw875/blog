@@ -128,7 +128,7 @@ select:focus,
 .menu-list a {
     color: #666;
     border-bottom: 1px solid transparent;
-    -webkit-transition: border-bottom-color 0.3s;
+    transition: border-bottom-color 0.3s;
 }
 a.current,
 .menu-list a:hover {
@@ -137,7 +137,6 @@ a.current,
 }
 input[type="text"].search {
     display: inline;
-    width: 10em;
 }
 .menu-list .search-icon:hover {
     border-bottom-color: transparent;
@@ -233,7 +232,7 @@ input[type="submit"] {
     border-color: #ddd;
     border-style: solid;
     border-radius: 4px;
-    -webkit-transition: background-color .3s;
+    transition: background-color .3s;
 }
 button:hover,
 input[type="button"]:hover,
@@ -246,7 +245,6 @@ input[type="submit"]:hover {
 }
 .post-form input {
     display: inline;
-    width: auto;
 }
 .images-list img {
     display: block;

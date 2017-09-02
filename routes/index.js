@@ -1,8 +1,8 @@
-const crypto = require('crypto');
-const Post = require('../models/post.js');
-const multer = require('multer');
+const crypto  = require('crypto');
+const Post    = require('../models/post.js');
+const multer  = require('multer');
 const setting = require('../settings.js');
-const fs = require('fs');
+const fs      = require('fs');
 
 module.exports = function (app) {
     app.get('/', function (req, res) {
@@ -69,7 +69,12 @@ module.exports = function (app) {
     app.post('/post', function (req, res) {
         const currentUser = req.session.user;
         const tags = [req.body.tag1, req.body.tag2, req.body.tag3];
-        const post = new Post(currentUser.name, req.body.title, tags, req.body.post, req.body.contentType);
+        const post = new Post(
+            currentUser.name,
+            req.body.title,
+            tags,
+            req.body.post,
+            req.body.contentType);
 
         post.save(function (err) {
             if (err) {
@@ -313,7 +318,7 @@ const postStorage = multer.diskStorage({
     destination: function (req, file, cb) {
         const dir = './public/images/upload/' + req.params._id;
         if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, 0755);
+            fs.mkdirSync(dir, 0o755);
         }
         cb(null, dir);
     },
@@ -332,14 +337,11 @@ const deleteFolderRecursive = function (path) {
         fs.readdirSync(path).forEach(function (file, index) {
             const curPath = path + '/' + file;
             if (fs.lstatSync(curPath).isDirectory()) {
-                console.log('folder: ' + curPath);
                 deleteFolderRecursive(curPath);
             } else {
-                console.log('file: ' + curPath);
                 fs.unlinkSync(curPath);
             }
         });
-        console.log(path);
         fs.rmdirSync(path);
     }
 };

@@ -1,6 +1,6 @@
 const settings = require('../settings');
-const Db = require('mongodb').Db;
-const Server = require('mongodb').Server;
+const Db       = require('mongodb').Db;
+const Server   = require('mongodb').Server;
 
 module.exports = new Db(
     settings.db,
