@@ -5,11 +5,11 @@ const setting = require('../settings.js');
 const fs      = require('fs');
 
 module.exports = function (app) {
-    app.get('/', function (req, res) {
+    app.get('/', (req, res) => {
         // 判断是否是第一页，并把请求的页数转换成 number 类型
         const page = parseInt(req.query.p, 10) || 1;
         // 查询并返回第 page 页的 10 篇文章
-        Post.getTen(null, page, function (err, posts, total) {
+        Post.getTen(null, page, (err, posts, total) => {
             let list = posts;
             if (err) {
                 list = [];
@@ -28,7 +28,7 @@ module.exports = function (app) {
     });
 
     app.get('/login', checkNotLogin);
-    app.get('/login', function (req, res) {
+    app.get('/login', (req, res) => {
         res.render('login', {
             title: '登录',
             user: req.session.user,
@@ -38,7 +38,7 @@ module.exports = function (app) {
     });
 
     app.post('/login', checkNotLogin);
-    app.post('/login', function (req, res) {
+    app.post('/login', (req, res) => {
         const md5 = crypto.createHash('md5');
         const password = md5.update(req.body.password).digest('hex');
 
@@ -56,7 +56,7 @@ module.exports = function (app) {
     });
 
     app.get('/post', checkLogin);
-    app.get('/post', function (req, res) {
+    app.get('/post', (req, res) => {
         res.render('post', {
             title: '发表',
             user: req.session.user,
@@ -66,7 +66,7 @@ module.exports = function (app) {
     });
 
     app.post('/post', checkLogin);
-    app.post('/post', function (req, res) {
+    app.post('/post', (req, res) => {
         const currentUser = req.session.user;
         const tags = [req.body.tag1, req.body.tag2, req.body.tag3];
         const post = new Post(
@@ -76,7 +76,7 @@ module.exports = function (app) {
             req.body.post,
             req.body.contentType);
 
-        post.save(function (err) {
+        post.save(err => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -87,14 +87,14 @@ module.exports = function (app) {
     });
 
     app.get('/logout', checkLogin);
-    app.get('/logout', function (req, res) {
+    app.get('/logout', (req, res) => {
         req.session.user = null;
         req.flash('success', '登出成功!');
         res.redirect('/');
     });
 
     app.get('/upload', checkLogin);
-    app.get('/upload', function (req, res) {
+    app.get('/upload', (req, res) => {
         res.render('upload', {
             title: '文件上传',
             user: req.session.user,
@@ -104,20 +104,20 @@ module.exports = function (app) {
     });
 
     app.post('/upload', checkLogin);
-    app.post('/upload', upload.array('field1', 5), function (req, res) {
+    app.post('/upload', upload.array('field1', 5), (req, res) => {
         req.flash('success', '文件上传成功！');
         res.redirect('/upload');
     });
 
     app.post('/post/upload/:_id', checkLogin);
-    app.post('/post/upload/:_id', postUpload.array('file', 5), function (req, res) {
+    app.post('/post/upload/:_id', postUpload.array('file', 5), (req, res) => {
         res.json({
             'status': '成功'
         });
     });
 
     app.get('/post/image/remove/:_id/:url', checkLogin);
-    app.get('/post/image/remove/:_id/:url', function (req, res) {
+    app.get('/post/image/remove/:_id/:url', (req, res) => {
         const dir = './public/images/upload/' + req.params._id + '/' + req.params.url;
         if (fs.existsSync(dir)) {
             fs.unlinkSync(dir);
@@ -127,8 +127,8 @@ module.exports = function (app) {
         }
     });
 
-    app.get('/archive', function (req, res) {
-        Post.getArchive(function (err, posts) {
+    app.get('/archive', (req, res) => {
+        Post.getArchive((err, posts) => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -143,8 +143,8 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/tags', function (req, res) {
-        Post.getTags(function (err, posts) {
+    app.get('/tags', (req, res) => {
+        Post.getTags((err, posts) => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -159,8 +159,8 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/tags/:tag', function (req, res) {
-        Post.getTag(req.params.tag, function (err, posts) {
+    app.get('/tags/:tag', (req, res) => {
+        Post.getTag(req.params.tag, (err, posts) => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -175,7 +175,7 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/about', function (req, res) {
+    app.get('/about', (req, res) => {
         res.render('about', {
             title: '关于我',
             user: req.session.user,
@@ -184,8 +184,8 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/search', function (req, res) {
-        Post.search(req.query.keyword, function (err, posts) {
+    app.get('/search', (req, res) => {
+        Post.search(req.query.keyword, (err, posts) => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -200,8 +200,8 @@ module.exports = function (app) {
         });
     });
 
-    app.get('/p/:_id', function (req, res) {
-        Post.getOne(req.params._id, function (err, post) {
+    app.get('/p/:_id', (req, res) => {
+        Post.getOne(req.params._id, (err, post) => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('/');
@@ -217,8 +217,8 @@ module.exports = function (app) {
     });
 
     app.get('/edit/:_id', checkLogin);
-    app.get('/edit/:_id', function (req, res) {
-        Post.edit(req.params._id, function (err, post) {
+    app.get('/edit/:_id', (req, res) => {
+        Post.edit(req.params._id, (err, post) => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('back');
@@ -235,12 +235,12 @@ module.exports = function (app) {
     });
 
     app.get('/post/images/:_id', checkLogin);
-    app.get('/post/images/:_id', function (req, res) {
+    app.get('/post/images/:_id', (req, res) => {
         const images_url = [];
         const dir = './public/images/upload/' + req.params._id;
         if (fs.existsSync(dir)) {
             const files = fs.readdirSync(dir);
-            files.forEach(function (item) {
+            files.forEach(item => {
                 const imgPath = dir + '/' + item;
                 const stats = fs.statSync(imgPath);
                 if (!stats.isDirectory()) {
@@ -254,8 +254,8 @@ module.exports = function (app) {
     });
 
     app.post('/edit/:_id', checkLogin);
-    app.post('/edit/:_id', function (req, res) {
-        Post.update(req.params._id, req.body.post, function (err) {
+    app.post('/edit/:_id', (req, res) => {
+        Post.update(req.params._id, req.body.post, err => {
             const url = encodeURI('/p/' + req.params._id);
             if (err) {
                 req.flash('error', err);
@@ -267,9 +267,9 @@ module.exports = function (app) {
     });
 
     app.get('/remove/:_id', checkLogin);
-    app.get('/remove/:_id', function (req, res) {
+    app.get('/remove/:_id', (req, res) => {
         const id = req.params._id;
-        Post.remove(id, function (err) {
+        Post.remove(id, err => {
             if (err) {
                 req.flash('error', err);
                 return res.redirect('back');
@@ -280,7 +280,7 @@ module.exports = function (app) {
         });
     });
 
-    app.use(function (req, res) {
+    app.use((req, res) => {
         res.render('404');
     });
 
@@ -302,10 +302,10 @@ module.exports = function (app) {
 };
 
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: (req, file, cb) => {
         cb(null, './public/images/upload/');
     },
-    filename: function (req, file, cb) {
+    filename: (req, file, cb) => {
         cb(null, file.originalname);
     }
 });
@@ -315,14 +315,14 @@ const upload = multer({
 
 
 const postStorage = multer.diskStorage({
-    destination: function (req, file, cb) {
+    destination: (req, file, cb) => {
         const dir = './public/images/upload/' + req.params._id;
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, 0o755);
         }
         cb(null, dir);
     },
-    filename: function (req, file, cb) {
+    filename: (req, file, cb) => {
         let ext = file.originalname.split(/\./g);
         ext = ext[ext.length - 1];
         cb(null, req.params._id + Date.now() + '.' + ext);
@@ -332,9 +332,9 @@ const postUpload = multer({
     storage: postStorage
 });
 
-const deleteFolderRecursive = function (path) {
+const deleteFolderRecursive = (path) => {
     if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach(function (file, index) {
+        fs.readdirSync(path).forEach((file, index) => {
             const curPath = path + '/' + file;
             if (fs.lstatSync(curPath).isDirectory()) {
                 deleteFolderRecursive(curPath);

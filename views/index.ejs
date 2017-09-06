@@ -14,10 +14,17 @@
       <% }) %>
     <% } %>
   </p>
-  <div class="post-content"><%- post.post %></div>
+  <div style="display: none;" class="post-content"><%- post.post %></div>
   <p class="info">
     阅读：<%= post.pv %>
   </p>
   </article>
 <% }) %>
 <%- include footer %>
+<script>
+$(function () {
+    $('.post-content').each(function () {
+        $(this).text($(this).text()).show();
+    });
+});
+</script>

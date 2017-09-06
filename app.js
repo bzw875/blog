@@ -42,8 +42,7 @@ app.use(express.static(path.join(__dirname, 'public'), {
     maxage: 86400 * 365
 }));
 app.use(function (err, req, res, next) {
-    const meta = '[' + new Date() + '] ' + req.url + '\n';
-    errorLog.write(meta + err.stack + '\n');
+    errorLog.write(`[${new Date()}]${req.url}\n${err.stack}\n`);
     next();
 });
 
@@ -55,7 +54,7 @@ app.use(session({
         maxAge: 1000 * 60 * 60 * 24 * 30
     },
     store: new MongoStore({
-        url: 'mongodb://' + settings.host + ':' + settings.port + '/' + settings.db,
+        url: `mongodb://${settings.host}:${settings.port}/${settings.db}`,
     })
 }));
 
