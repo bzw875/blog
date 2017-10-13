@@ -3,6 +3,7 @@ const Post    = require('../models/post.js');
 const multer  = require('multer');
 const setting = require('../settings.js');
 const fs      = require('fs');
+const os      = require('os');
 
 module.exports = function (app) {
     app.get('/', (req, res) => {
@@ -277,6 +278,29 @@ module.exports = function (app) {
             deleteFolderRecursive('./public/images/upload/' + id);
             req.flash('succss', '删除成功！');
             res.redirect('/');
+        });
+    });
+
+    app.get('/monitoring', checkLogin);
+    app.get('/monitoring', (req, res) => {
+        const cpus = os.cpus();
+        const arch = os.arch();
+        const loadavg = os.loadavg();
+        const freemem = os.freemem();
+        const totalmem = os.totalmem();
+        const usage = totalmem - freemem;
+        res.render('monitoring', {
+            title: '系统监控',
+            cpus: cpus,
+            arch: arch,
+            systemTime: new Date(),
+            loadavg: loadavg,
+            freemem: freemem,
+            totalmem: totalmem,
+            usage: usage,
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
         });
     });
 
