@@ -17,13 +17,17 @@ class Post {
     save(callback) {
         const date = new Date();
         // 存储各种时间格式，方便以后扩展
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const hours = date.getHours();
+        const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes();
         const time = {
             date: date,
-            year: date.getFullYear(),
-            month: date.getFullYear() + '-' + (date.getMonth() + 1),
-            day: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate(),
-            minute: date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate() + ' ' +
-                date.getHours() + ':' + (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes())
+            year: year,
+            month: `${year}-${month}`,
+            day: `${year}-${month}-${day}`,
+            minute: `${year}-${month}-${day} ${hours}:${minutes}`,
         };
         // 要存入数据库的文档
         const post = {
@@ -33,7 +37,7 @@ class Post {
             contentType: this.contentType,
             tags: this.tags.filter(tag => tag !== ''),
             post: this.post,
-            pv: 0
+            pv: 0,
         };
         async.waterfall([
             cb => {
@@ -72,9 +76,9 @@ class Post {
             (collection, query, total, cb) => {
                 collection.find(query, {
                     skip: (page - 1) * 10,
-                    limit: 10
+                    limit: 10,
                 }).sort({
-                    time: -1
+                    time: -1,
                 }).toArray((err, docs) => {
                     docs.forEach(doc => {
                         let post = doc.post;
@@ -104,16 +108,16 @@ class Post {
             },
             (collection, cb) => {
                 collection.findOne({
-                    '_id': new ObjectID(_id)
+                    '_id': new ObjectID(_id),
                 }, (err, doc) => cb(err, collection, doc));
             },
             (collection, doc, cb) => {
                 if (cb) {
                     collection.update({
-                        '_id': new ObjectID(_id)
+                        '_id': new ObjectID(_id),
                     }, {
                         $inc: {
-                            pv: 1
+                            pv: 1,
                         }
                     }, err => {
                         if (err) {
@@ -147,7 +151,7 @@ class Post {
             },
             (collection, cb) => {
                 collection.findOne({
-                    '_id': new ObjectID(_id)
+                    '_id': new ObjectID(_id),
                 }, (err, doc) => cb(err, doc));
             }
         ], (err, doc) => {
@@ -167,10 +171,10 @@ class Post {
             },
             (collection, cb) => {
                 collection.update({
-                    '_id': new ObjectID(_id)
+                    '_id': new ObjectID(_id),
                 }, {
                     $set: {
-                        post: post
+                        post: post,
                     }
                 }, (err) => cb(err));
             }
@@ -191,14 +195,14 @@ class Post {
             },
             (collection, cb) => {
                 collection.findOne({
-                    '_id': new ObjectID(_id)
+                    '_id': new ObjectID(_id),
                 }, (err, doc) => cb(err, collection, doc));
             },
             (collection, doc, cb) => {
                 collection.remove({
-                    '_id': new ObjectID(_id)
+                    '_id': new ObjectID(_id),
                 }, {
-                    w: 1
+                    w: 1,
                 }, err => cb(err));
             }
         ], (err) => {
@@ -220,9 +224,9 @@ class Post {
                 collection.find({}, {
                     'name': 1,
                     'time': 1,
-                    'title': 1
+                    'title': 1,
                 }).sort({
-                    time: -1
+                    time: -1,
                 }).toArray((err, docs) => cb(err, docs));
             }
         ], (err, docs) => {
@@ -261,13 +265,13 @@ class Post {
             },
             (collection, cb) => {
                 collection.find({
-                    'tags': tag
+                    'tags': tag,
                 }, {
                     'name': 1,
                     'time': 1,
-                    'title': 1
+                    'title': 1,
                 }).sort({
-                    time: -1
+                    time: -1,
                 }).toArray((err, docs) => cb(err, docs));
             }
         ], (err, docs) => {
@@ -288,11 +292,11 @@ class Post {
             (collection, cb) => {
                 const pattern = new RegExp(keyword, 'i');
                 collection.find({
-                    'title': pattern
+                    'title': pattern,
                 }, {
                     'name': 1,
                     'time': 1,
-                    'title': 1
+                    'title': 1,
                 }).sort({
                     time: -1
                 }).toArray((err, docs) => cb(err, docs));

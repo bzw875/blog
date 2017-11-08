@@ -1,20 +1,20 @@
-$(function () {
-    $('#search_btn').click(function () {
+$(() => {
+    $('#search_btn').click(() => {
         $('#searchForm').addClass('open-search');
         return false;
     });
-    $(document).click(function (e) {
+    $(document).click((e) => {
         if ($(e.target).closest('#searchForm').length === 0) {
             $('#searchForm').removeClass('open-search');
         }
     });
     const href = location.href;
-    $('.index-nav a').each(function () {
+    $('.index-nav a').each(() => {
         if (href === this.href) {
             $(this).addClass('current');
         }
     });
-    $('[data-date]').each(function () {
+    $('[data-date]').each(() => {
         const self = $(this);
 
         let str = self.data('date');
