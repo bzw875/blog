@@ -41,10 +41,10 @@ class Post {
         };
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.insert(post, {
@@ -61,10 +61,10 @@ class Post {
     static getTen(name, page, callback) {
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 const query = {};
@@ -101,10 +101,10 @@ class Post {
         // 打开数据库
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.findOne({
@@ -144,10 +144,10 @@ class Post {
         // 打开数据库
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.findOne({
@@ -164,10 +164,10 @@ class Post {
     static update(_id, post, callback) {
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.update({
@@ -188,10 +188,10 @@ class Post {
     static remove(_id, callback) {
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.findOne({
@@ -215,10 +215,10 @@ class Post {
     static getArchive(callback) {
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.find({}, {
@@ -239,10 +239,10 @@ class Post {
     static getTags(callback) {
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.distinct('tags', (err, docs) => cb(err, docs));
@@ -258,10 +258,10 @@ class Post {
     static getTag(tag, callback) {
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 collection.find({
@@ -284,10 +284,10 @@ class Post {
     static search(keyword, callback) {
         async.waterfall([
             cb => {
-                mongodb.open((err, db) => cb(err, db));
+                mongodb.open(cb);
             },
             (db, cb) => {
-                db.collection('posts', (err, collection) => cb(err, collection));
+                db.collection('posts', cb);
             },
             (collection, cb) => {
                 const pattern = new RegExp(keyword, 'i');
