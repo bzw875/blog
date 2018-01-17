@@ -22,6 +22,8 @@ const MongoStore = require('connect-mongo')(session);
 
 const app = express();
 
+app.set('jwtTokenSecret', 'shenJieLower');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -58,8 +60,18 @@ app.use(session({
     }),
 }));
 
+app.all('*', function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Content-Type,Content-Length, Authorization, Accept,X-Requested-With,x-access-token');
+    res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS,HEAD,CONNECT,TRACE,PATCH');
+    next();
+});
 
 routes(app);
+
+app.use((req, res) => {
+    res.sendFile(__dirname + '/index.html');
+});
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

@@ -4,9 +4,10 @@ const multer  = require('multer');
 const setting = require('../settings.js');
 const fs      = require('fs');
 const os      = require('os');
+const jwt = require('jwt-simple');
 
 module.exports = function (app) {
-    app.get('/', (req, res) => {
+    app.get('/home', (req, res) => {
         // 判断是否是第一页，并把请求的页数转换成 number 类型
         const page = parseInt(req.query.p, 10) || 1;
         // 查询并返回第 page 页的 10 篇文章
@@ -15,7 +16,7 @@ module.exports = function (app) {
             if (err) {
                 list = [];
             }
-            res.render('index', {
+            res.json({
                 title: 'Blog',
                 posts: list,
                 page: page,
@@ -30,7 +31,7 @@ module.exports = function (app) {
 
     app.get('/login', checkNotLogin);
     app.get('/login', (req, res) => {
-        res.render('login', {
+        res.json({
             title: '登录',
             user: req.session.user,
             success: req.flash('success').toString(),
@@ -44,21 +45,30 @@ module.exports = function (app) {
         const password = md5.update(req.body.password).digest('hex');
 
         if (req.body.name === setting.email && password === setting.password) {
-            req.session.user = {
+            app.set('user', {
                 name: setting.name,
                 email: setting.email
-            };
-            req.flash('success', '登陆成功!');
-            res.redirect('/');
+            });
+            let expires = new Date().getTime() + 30 * 24 * 60 * 60 * 1000;
+            let token = jwt.encode({
+                iss: setting.name,
+                exp: expires
+            }, app.get('jwtTokenSecret'));
+
+            res.json({
+                status: 'success',
+                token: token,
+                expires: expires,
+                user: setting.name
+            });
         } else {
-            req.flash('error', '用户或密码错误!');
-            return res.redirect('/login');
+            res.json({ status: 'error', message: '用户或密码错误!' });
         }
     });
 
     app.get('/post', checkLogin);
     app.get('/post', (req, res) => {
-        res.render('post', {
+        res.json({
             title: '发表',
             user: req.session.user,
             success: req.flash('success').toString(),
@@ -68,10 +78,9 @@ module.exports = function (app) {
 
     app.post('/post', checkLogin);
     app.post('/post', (req, res) => {
-        const currentUser = req.session.user;
         const tags = [req.body.tag1, req.body.tag2, req.body.tag3];
         const post = new Post(
-            currentUser.name,
+            setting.name,
             req.body.title,
             tags,
             req.body.post,
@@ -79,11 +88,16 @@ module.exports = function (app) {
 
         post.save(err => {
             if (err) {
-                req.flash('error', err);
-                return res.redirect('/');
+                res.json({
+                    status: 'error',
+                    message: err.message
+                });
+                return;
             }
-            req.flash('success', '发布成功！');
-            res.redirect('/');
+            res.json({
+                status: 'success',
+                message: '发布成功！'
+            });
         });
     });
 
@@ -96,7 +110,7 @@ module.exports = function (app) {
 
     app.get('/upload', checkLogin);
     app.get('/upload', (req, res) => {
-        res.render('upload', {
+        res.json({
             title: '文件上传',
             user: req.session.user,
             success: req.flash('success').toString(),
@@ -134,7 +148,7 @@ module.exports = function (app) {
                 req.flash('error', err);
                 return res.redirect('/');
             }
-            res.render('archive', {
+            res.json({
                 title: '存档',
                 posts: posts,
                 user: req.session.user,
@@ -150,7 +164,7 @@ module.exports = function (app) {
                 req.flash('error', err);
                 return res.redirect('/');
             }
-            res.render('tags', {
+            res.json({
                 title: '标签',
                 posts: posts,
                 user: req.session.user,
@@ -166,7 +180,7 @@ module.exports = function (app) {
                 req.flash('error', err);
                 return res.redirect('/');
             }
-            res.render('tag', {
+            res.json({
                 title: 'TAG:' + req.params.tag,
                 posts: posts,
                 user: req.session.user,
@@ -177,7 +191,7 @@ module.exports = function (app) {
     });
 
     app.get('/about', (req, res) => {
-        res.render('about', {
+        res.json({
             title: '关于我',
             user: req.session.user,
             success: req.flash('success').toString(),
@@ -191,7 +205,7 @@ module.exports = function (app) {
                 req.flash('error', err);
                 return res.redirect('/');
             }
-            res.render('search', {
+            res.json({
                 title: 'SEARCH:' + req.query.keyword,
                 posts: posts,
                 user: req.session.user,
@@ -207,7 +221,7 @@ module.exports = function (app) {
                 req.flash('error', err);
                 return res.redirect('/');
             }
-            res.render('article', {
+            res.json({
                 title: post.title,
                 post: post,
                 user: req.session.user,
@@ -225,7 +239,7 @@ module.exports = function (app) {
                 return res.redirect('back');
             }
 
-            res.render('edit', {
+            res.json({
                 title: '编辑',
                 post: post,
                 user: req.session.user,
@@ -257,13 +271,18 @@ module.exports = function (app) {
     app.post('/edit/:_id', checkLogin);
     app.post('/edit/:_id', (req, res) => {
         Post.update(req.params._id, req.body.post, err => {
-            const url = encodeURI('/p/' + req.params._id);
             if (err) {
                 req.flash('error', err);
-                return res.redirect(url); // 出错！返回文章页
+                res.json({
+                    status: 'error',
+                    message: err.message
+                });
+                return false;
             }
             req.flash('success', '修改成功!');
-            res.redirect(url); // 成功！返回文章页
+            res.json({
+                status: 'success'
+            });
         });
     });
 
@@ -276,8 +295,10 @@ module.exports = function (app) {
                 return res.redirect('back');
             }
             deleteFolderRecursive('./public/images/upload/' + id);
-            req.flash('succss', '删除成功！');
-            res.redirect('/');
+            res.json({
+                status: 'success',
+                message: '删除成功'
+            });
         });
     });
 
@@ -289,7 +310,7 @@ module.exports = function (app) {
         const freemem = os.freemem();
         const totalmem = os.totalmem();
         const usage = totalmem - freemem;
-        res.render('monitoring', {
+        res.json({
             title: '系统监控',
             cpus: cpus,
             arch: arch,
@@ -304,24 +325,52 @@ module.exports = function (app) {
         });
     });
 
-    app.use((req, res) => {
-        res.render('404');
-    });
-
     function checkLogin(req, res, next) {
-        if (!req.session.user) {
-            req.flash('error', '未登录!');
-            res.redirect('/login');
+        const token = (req.body && req.body.access_token) ||
+            (req.query && req.query.access_token) ||
+            req.headers['x-access-token'];
+        if (token) {
+            try {
+                let decoded = jwt.decode(token, app.get('jwtTokenSecret'));
+                if (decoded.exp <= Date.now()) {
+                    res.end('Access token has expired', 400);
+                }
+                req.user = decoded.iss;
+                next();
+            } catch (err) {
+                res.json({
+                    status: 'error',
+                    message: '没有登录'
+                });
+            }
+        } else {
+            res.json({
+                status: 'error',
+                message: '没有登录'
+            });
         }
-        next();
     }
 
     function checkNotLogin(req, res, next) {
-        if (req.session.user) {
-            req.flash('error', '已登录!');
-            res.redirect('back');
+        const token = (req.body && req.body.access_token) ||
+            (req.query && req.query.access_token) ||
+            req.headers['x-access-token'];
+        if (!token) {
+            next();
+        } else {
+            try {
+                let decoded = jwt.decode(token, app.get('jwtTokenSecret'));
+                if (decoded.exp <= Date.now()) {
+                    res.end('Access token has expired', 400);
+                }
+                res.json({
+                    status: 'error',
+                    message: '已经登录'
+                });
+            } catch (err) {
+                return next();
+            }
         }
-        next();
     }
 };
 
