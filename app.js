@@ -70,7 +70,7 @@ app.all('*', function (req, res, next) {
 routes(app);
 
 app.use((req, res) => {
-    res.sendFile(__dirname + '/index.html');
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // catch 404 and forward to error handler

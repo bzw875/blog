@@ -136,9 +136,15 @@ module.exports = function (app) {
         const dir = './public/images/upload/' + req.params._id + '/' + req.params.url;
         if (fs.existsSync(dir)) {
             fs.unlinkSync(dir);
-            res.send('删除成功');
+            res.json({
+                status: 'success',
+                message: '删除成功'
+            });
         } else {
-            res.send('文件找不到');
+            res.json({
+                status: 'success',
+                message: '文件找不到'
+            });
         }
     });
 
@@ -333,10 +339,14 @@ module.exports = function (app) {
             try {
                 let decoded = jwt.decode(token, app.get('jwtTokenSecret'));
                 if (decoded.exp <= Date.now()) {
-                    res.end('Access token has expired', 400);
+                    res.json({
+                        status: 'error',
+                        message: '没有登录'
+                    });
+                } else {
+                    req.user = decoded.iss;
+                    next();
                 }
-                req.user = decoded.iss;
-                next();
             } catch (err) {
                 res.json({
                     status: 'error',
