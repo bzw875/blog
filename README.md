@@ -18,3 +18,5 @@ node.js编写的个人博客网站
     npm start
 
 确定启动了mongodb,打开[http://localhost:9000/](http://localhost:9000/)就可以访问了
+
+在线例子见 [http://banzhaowu.com:8080/](http://banzhaowu.com:8080/)
